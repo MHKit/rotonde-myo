@@ -1,0 +1,5 @@
+.*.sw*
+
+main.pyc
+myo_raw.pyc
+common.pyc

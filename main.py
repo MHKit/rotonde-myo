@@ -1,0 +1,108 @@
+#!/usr/bin/python
+
+import signal
+import sys
+
+import threading
+import websocket
+
+#
+# Myo stuffs
+#
+
+from PyoConnect import *
+myo = Myo(sys.argv[1] if len(sys.argv) >= 2 else None) 
+
+def myo_thread():
+	myo.connect()
+	myo.use_lock = False
+	myo.unlock("hold")
+	while True:
+		myo.run()
+		myo.tick()
+
+#
+# Myo events
+# TODO translate all handlers to rotonde events
+# handlers:
+#
+# onEMG
+# onPoseEdge
+# onLock
+# onUnlock
+# onPeriodic
+# onWear
+# onUnwear
+# onBoxChange
+#
+
+def onUnlock():
+	print("Unlock ! ")
+
+def onLock():
+	print("Lock ! ")
+
+def onPoseEdge(pose, edge):
+	print("onPoseEdge: " + pose + ", " + edge)
+
+myo.onPoseEdge = onPoseEdge
+
+#
+# Rotonde stuffs
+#
+
+def send_definition(typ, name, fields):
+	print("Sending definition " + name)	
+
+def send_action(name, data):
+	print("Sending action " + name)	
+
+def send_event(name, data):
+	print("Sending event " + name)	
+
+def send_subscribe(name):
+	print("Sending subscribe " + name)	
+
+#
+# Websocket stuffs
+#
+
+def on_message(ws, message):
+	print message
+
+def on_error(ws, error):
+	print error
+	sys.exit(0)
+
+def on_close(ws):
+	print "Closed"
+	sys.exit(0)
+
+def on_open(ws):
+	print "Connected"
+
+def ws_thread():
+	websocket.enableTrace(True)
+	ws = websocket.WebSocketApp("ws://rotonde:4224/",
+				  on_message = on_message,
+				  on_error = on_error,
+				  on_close = on_close)
+	ws.on_open = on_open
+	ws.run_forever()
+
+#
+# Threading stuffs
+#
+
+tmyo = threading.Thread(target=myo_thread)
+tmyo.daemon = True
+tmyo.start()
+
+tws = threading.Thread(target=ws_thread)
+tws.daemon = True
+tws.start()
+
+def signal_handler(signal, frame):
+	sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
+signal.pause()
