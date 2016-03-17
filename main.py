@@ -38,13 +38,22 @@ def myo_thread():
 
 def onUnlock():
 	print("Unlock ! ")
+	send_event("MYO_UNLOCK", {})
 
 def onLock():
 	print("Lock ! ")
+	send_event("MYO_LOCK", {})
 
 def onPoseEdge(pose, edge):
 	print("onPoseEdge: " + pose + ", " + edge)
 	send_event("MYO_POSE_EDGE", {"pose": pose, "edge": edge})
+
+def getRoll():
+	print ("roll": myo.getRoll())
+	send_event("MYO_ROLL", {"roll": myo.getRoll()})
+
+
+
 myo.onPoseEdge = onPoseEdge
 myo.onLock = onLock
 myo.onUnlock = onUnlock
@@ -53,6 +62,21 @@ myo.onUnlock = onUnlock
 #myo.onUnwear = onUnwear
 #myo.onEMG = onEMG
 #myo.onBoxChange = onBoxChange
+#myo.getArm = getArm
+#myo.getXDirection = getXDirection
+# myo.getTimeMilliseconds()
+myo.getRoll()
+# myo.getPitch()
+# myo.getYaw()
+# myo.getGyro()
+# myo.getAccel()
+# myo.centerMousePosition()
+# myo.setLockingPolicy(lockingPolicy)
+# myo.unlock(unlockType)
+# myo.lock()
+# myo.isUnlocked()
+# myo.notifyUserAction
+
 
 #
 # Rotonde stuffs
