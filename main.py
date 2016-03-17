@@ -38,24 +38,21 @@ def onLock():
 	send_event("MYO_LOCK", {})
 
 def onPeriodic():
-	print("onPeriodic?")
-	send_event("MYO_PERIODIC", {})
+	print({"roll": myo.getRoll()})
+	send_event("MYO_PERIODIC", {"roll": myo.getRoll(),"pitch": myo.getPitch(),"yaw": myo.getYaw(),"gyro": myo.getGyro(),"accell": myo.getAccel()})
+	# myo.getRoll()
+	# myo.getPitch()
+	# myo.getYaw()
+	# myo.getGyro()
+	# myo.getAccel()
 
-def onWear():
+def onWear(arm, xdirection):
 	print("Myo wear! ")
-	send_event("MYO_WEAR", {})
+	send_event("MYO_WEAR", {"arm": arm, "xdirection": xdirection})
 
 def onUnwear():
 	print("Myo unwear! ")
 	send_event("MYO_UNWEAR", {})
-
-def onEMG():
-	print("EMG! ")
-	send_event("MYO_EMG", {})
-
-def getRoll():
-	print ("roll:" + myo.getRoll())
-	send_event("MYO_ROLL", {"roll": myo.getRoll()})
 
 
 
@@ -65,22 +62,8 @@ myo.onUnlock = onUnlock
 myo.onPeriodic = onPeriodic
 myo.onWear = onWear
 myo.onUnwear = onUnwear
-myo.onEMG = onEMG
+#myo.onEMG = onEMG
 #myo.onBoxChange = onBoxChange
-#myo.getArm = getArm
-#myo.getXDirection = getXDirection
-# myo.getTimeMilliseconds()
-myo.getRoll()
-# myo.getPitch()
-# myo.getYaw()
-# myo.getGyro()
-# myo.getAccel()
-# myo.centerMousePosition()
-# myo.setLockingPolicy(lockingPolicy)
-# myo.unlock(unlockType)
-# myo.lock()
-# myo.isUnlocked()
-# myo.notifyUserAction
 
 
 #
@@ -96,7 +79,7 @@ def send_action(name, data):
 	print("Sending action " + name)
 
 def send_event(name, data):
-	print("Sending event " + name + data)
+	print("Sending event " + name)
 
 def send_subscribe(name):
 	print("Sending subscribe " + name)
