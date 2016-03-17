@@ -117,6 +117,10 @@ def on_open(ws):
 		"name": "",
 		"type": "",
 		"units": "",
+	},{
+		"name": "",
+		"type": "",
+		"units": "",
 	}])
 
 websocket.enableTrace(True)
