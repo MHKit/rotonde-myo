@@ -55,7 +55,7 @@ def onBoxChange():
 
 def getRoll():
 	print ("roll:" + myo.getRoll())
-	send_event("MYO_ROLL", {"roll:" myo.getRoll()})
+	send_event("MYO_ROLL", {"roll": myo.getRoll()})
 
 
 
@@ -65,7 +65,7 @@ myo.onUnlock = onUnlock
 myo.onPeriodic = onPeriodic
 myo.onWear = onWear
 myo.onUnwear = onUnwear
-myo.onEMG = onEMG
+#myo.onEMG = onEMG
 myo.onBoxChange = onBoxChange
 #myo.getArm = getArm
 #myo.getXDirection = getXDirection
