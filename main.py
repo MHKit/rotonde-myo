@@ -2,6 +2,7 @@
 
 import signal
 import sys
+import json
 
 import threading
 import websocket
@@ -23,18 +24,10 @@ def myo_thread():
 
 #
 # Myo events
-# TODO translate all handlers to rotonde events
-# handlers:
-#
-# onEMG 	-> MYO_EMG
-# onPoseEdge	-> MYO_POSE_EDGE
-# onLock	-> MYO_LOCK
-# onUnlock	-> MYO_UNLOCK
-# onPeriodic	-> MYO_PERIODIC
-# onWear	-> MYO_WEAR
-# onUnwear	-> MYO_UNWEAR
-# onBoxChange	-> MYO_BOX_CHANGE
-#
+
+def onPoseEdge(pose, edge):
+	print("onPoseEdge: " + pose + ", " + edge)
+	send_event("MYO_POSE_EDGE", {"pose": pose, "edge": edge})
 
 def onUnlock():
 	print("Unlock ! ")
@@ -44,24 +37,36 @@ def onLock():
 	print("Lock ! ")
 	send_event("MYO_LOCK", {})
 
-def onPoseEdge(pose, edge):
-	print("onPoseEdge: " + pose + ", " + edge)
-	send_event("MYO_POSE_EDGE", {"pose": pose, "edge": edge})
+def onPeriodic():
+	print("onPeriodic?")
+	send_event("MYO_PERIODIC", {})
+
+def onWear():
+	print("Myo wear! ")
+	send_event("MYO_WEAR", {})
+
+def onUnwear():
+	print("Myo unwear! ")
+	send_event("MYO_UNWEAR", {})
+
+def onBoxChange():
+	print("Box changed! ")
+	send_event("MYO_BOX_CHANGE", {})
 
 def getRoll():
 	print ("roll:" + myo.getRoll())
-	send_event("MYO_ROLL", {"roll": myo.getRoll()})
+	send_event("MYO_ROLL", {"roll:" myo.getRoll()})
 
 
 
 myo.onPoseEdge = onPoseEdge
 myo.onLock = onLock
 myo.onUnlock = onUnlock
-#myo.onPeriodic = onPeriodic
-#myo.onWear = onWear
-#myo.onUnwear = onUnwear
-#myo.onEMG = onEMG
-#myo.onBoxChange = onBoxChange
+myo.onPeriodic = onPeriodic
+myo.onWear = onWear
+myo.onUnwear = onUnwear
+myo.onEMG = onEMG
+myo.onBoxChange = onBoxChange
 #myo.getArm = getArm
 #myo.getXDirection = getXDirection
 # myo.getTimeMilliseconds()
@@ -91,8 +96,8 @@ def send_action(name, data):
 	print("Sending action " + name)
 
 def send_event(name, data):
-	print("Sending event " + name)
-
+	print("Sending event " + name + data)
+	
 def send_subscribe(name):
 	print("Sending subscribe " + name)
 
