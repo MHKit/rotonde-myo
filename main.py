@@ -26,14 +26,14 @@ def myo_thread():
 # TODO translate all handlers to rotonde events
 # handlers:
 #
-# onEMG
-# onPoseEdge
-# onLock
-# onUnlock
-# onPeriodic
-# onWear
-# onUnwear
-# onBoxChange
+# onEMG 	-> MYO_EMG
+# onPoseEdge	-> MYO_POSE_EDGE
+# onLock	-> MYO_LOCK
+# onUnlock	-> MYO_UNLOCK
+# onPeriodic	-> MYO_PERIODIC
+# onWear	-> MYO_WEAR
+# onUnwear	-> MYO_UNWEAR
+# onBoxChange	-> MYO_BOX_CHANGE
 #
 
 def onUnlock():
@@ -44,12 +44,14 @@ def onLock():
 
 def onPoseEdge(pose, edge):
 	print("onPoseEdge: " + pose + ", " + edge)
-
+	send_event("MYO_POSE_EDGE", {"pose": pose, "edge": edge})
 myo.onPoseEdge = onPoseEdge
 
 #
 # Rotonde stuffs
 #
+
+# send helpers
 
 def send_definition(typ, name, fields):
 	print("Sending definition " + name)	
@@ -62,6 +64,14 @@ def send_event(name, data):
 
 def send_subscribe(name):
 	print("Sending subscribe " + name)	
+
+# receive helpers
+
+def attach_action(name, fn):
+	pass
+
+def attach_event(name, fn):
+	pass
 
 #
 # Websocket stuffs
