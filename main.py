@@ -11,7 +11,7 @@ import websocket
 #
 
 from PyoConnect import *
-myo = Myo(sys.argv[1] if len(sys.argv) >= 2 else None) 
+myo = Myo(sys.argv[1] if len(sys.argv) >= 2 else None)
 
 def myo_thread():
 	myo.connect()
@@ -46,6 +46,13 @@ def onPoseEdge(pose, edge):
 	print("onPoseEdge: " + pose + ", " + edge)
 	send_event("MYO_POSE_EDGE", {"pose": pose, "edge": edge})
 myo.onPoseEdge = onPoseEdge
+myo.onLock = onLock
+myo.onUnlock = onUnlock
+#myo.onPeriodic = onPeriodic
+#myo.onWear = onWear
+#myo.onUnwear = onUnwear
+#myo.onEMG = onEMG
+#myo.onBoxChange = onBoxChange
 
 #
 # Rotonde stuffs
@@ -54,16 +61,16 @@ myo.onPoseEdge = onPoseEdge
 # send helpers
 
 def send_definition(typ, name, fields):
-	print("Sending definition " + name)	
+	print("Sending definition " + name)
 
 def send_action(name, data):
-	print("Sending action " + name)	
+	print("Sending action " + name)
 
 def send_event(name, data):
-	print("Sending event " + name)	
+	print("Sending event " + name)
 
 def send_subscribe(name):
-	print("Sending subscribe " + name)	
+	print("Sending subscribe " + name)
 
 # receive helpers
 
