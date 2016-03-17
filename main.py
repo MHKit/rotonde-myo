@@ -49,7 +49,7 @@ def onPoseEdge(pose, edge):
 	send_event("MYO_POSE_EDGE", {"pose": pose, "edge": edge})
 
 def getRoll():
-	print ("roll": myo.getRoll())
+	print ("roll:" + myo.getRoll())
 	send_event("MYO_ROLL", {"roll": myo.getRoll()})
 
 
