@@ -49,9 +49,9 @@ def onUnwear():
 	print("Myo unwear! ")
 	send_event("MYO_UNWEAR", {})
 
-def onBoxChange():
-	print("Box changed! ")
-	send_event("MYO_BOX_CHANGE", {})
+def onEMG():
+	print("EMG! ")
+	send_event("MYO_EMG", {})
 
 def getRoll():
 	print ("roll:" + myo.getRoll())
@@ -65,8 +65,8 @@ myo.onUnlock = onUnlock
 myo.onPeriodic = onPeriodic
 myo.onWear = onWear
 myo.onUnwear = onUnwear
-#myo.onEMG = onEMG
-myo.onBoxChange = onBoxChange
+myo.onEMG = onEMG
+#myo.onBoxChange = onBoxChange
 #myo.getArm = getArm
 #myo.getXDirection = getXDirection
 # myo.getTimeMilliseconds()
@@ -97,7 +97,7 @@ def send_action(name, data):
 
 def send_event(name, data):
 	print("Sending event " + name + data)
-	
+
 def send_subscribe(name):
 	print("Sending subscribe " + name)
 
