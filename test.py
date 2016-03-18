@@ -18,6 +18,7 @@ def myo_thread():
 	myo.connect()
 	myo.use_lock = False
 	myo.unlock("hold")
+	myo.vibrate(1)
 	while True:
 		myo.run()
 		myo.tick()
@@ -43,7 +44,7 @@ def onPeriodic():
 	period_n += 1
 	if (period_n % 5) != 0:
 		return
-	print({"roll": myo.getRoll(),"pitch": myo.getPitch(),"yaw": myo.getYaw(),"gyro": myo.getGyro(),"accell": myo.getAccel()})
+	#print({"roll": myo.getRoll(),"pitch": myo.getPitch(),"yaw": myo.getYaw(),"gyro": myo.getGyro(),"accell": myo.getAccel()})
  	send_event("MYO_PERIODIC", {"roll": myo.getRoll(),"pitch": myo.getPitch(),"yaw": myo.getYaw(),"gyro": myo.getGyro(),"accell": myo.getAccel()})
 
 def onWear(arm, xdirection):
@@ -74,6 +75,11 @@ myo.onPeriodic = onPeriodic
 
 def send_definition(typ, name, fields):
 	print("Sending definition " + name)
+	global ws
+	d = json.dumps({"type":"def","payload":{"identifier": name,"type": typ,"fields": fields}})
+	if ws.sock.connected == True:
+		ws.send(d)
+
 
 def send_action(name, data):
 	print("Sending action " + name)
@@ -90,18 +96,28 @@ def send_subscribe(name):
 
 # receive helpers
 
-def attach_action(name, fn):
-	pass
+def onRotondeMyoVibrate(action):
+	print "Vibrate !"
 
-def attach_event(name, fn):
-	pass
+action_handlers = {
+	"MYO_VIBRATION": onRotondeMyoVibrate
+}
 
 #
 # Websocket stuffs
 #
 
 def on_message(ws, message):
+	packet = json.loads(message)
 	print message
+	if packet["type"] == "action":
+		action = packet["payload"]
+		print "received action " + action["identifier"]
+		handler = action_handlers[action["identifier"]]
+		if handler != None:
+			handler(action["data"])
+	elif packet["type"] == "def":
+		print "received definition " + packet["payload"]["identifier"]
 
 def on_error(ws, error):
 	print error
@@ -113,15 +129,7 @@ def on_close(ws):
 
 def on_open(ws):
 	print "Connected"
-	send_definition("event", "MYO_PERIODIC", [{
-		"name": "",
-		"type": "",
-		"units": "",
-	},{
-		"name": "",
-		"type": "",
-		"units": "",
-	}])
+	send_definition("action", "MYO_VIBRATION", [{"name":"vibrationType","type":"number","units":""}])
 
 websocket.enableTrace(True)
 ws = websocket.WebSocketApp("ws://rotonde:4224/",
@@ -149,4 +157,3 @@ def signal_handler(signal, frame):
 	sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
 signal.pause()
-
